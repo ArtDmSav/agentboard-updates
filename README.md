@@ -51,10 +51,20 @@ curl -fsSL https://raw.githubusercontent.com/ArtDmSav/agentboard-updates/main/in
 
 Только HTTPS и только `github.com`, `objects.githubusercontent.com`, `release-assets.githubusercontent.com`.
 
-**Подписи.** Пока выпуски идут **без подписи** — проверка по SHA-256, как выше. Перед продом включится подпись
-Ed25519 ключом владельца: к `manifest.json` и `channel.json` добавятся `manifest.json.sig` и `channel.json.sig`, а
-серверы будут принимать только файлы, подписанные ключами, вшитыми в их пакет. Отпечатки ключей (`key_id`) появятся
-здесь.
+**Подписи** — с выпуска **1.24.2** (4 ноября 2026; установщик — с `installer-v2`). Каждый выпуск подписан Ed25519
+ключом владельца: рядом с `manifest.json` и `channel.json` лежат `manifest.json.sig` и `channel.json.sig`, рядом с
+`agentboard-install.py` — `agentboard-install.py.sig`. Сервер с пакетом 1.24.2 и новее (обновлятор 1.2.0 и новее)
+принимает только файлы, подписанные ключом, вшитым в его пакет; неподписанное или подписанное чужим ключом не ставит.
+Выпуски до 1.24.2 — без подписи, проверка только по SHA-256, как выше.
+
+Ключи (`key_id` — первые 8 байт SHA-256 открытого ключа, в hex):
+
+| `key_id` | Роль | Открытый ключ (Ed25519, base64) |
+| --- | --- | --- |
+| `0dc349ef1c7751b9` | рабочий (`primary`) — им подписаны выпуски | `zdGAm91CiHLTFnvRA27HVEQ9LM7RQI0sI94kGLM/l1w=` |
+| `88b25c0283ce53e2` | запасной (`backup`) — офлайн, на случай замены рабочего | `ItETEAsqcW34w72EyPeI23ZAHmnv46HxMfexrGWhkiU=` |
+
+Других ключей у «Доски» нет. Подпись другим `key_id` — не наша.
 
 Проверить выпуск руками: SHA-256 архива (`sha256sum`) — `artifact.sha256` в `manifest.json`, SHA-256 `manifest.json` —
 `manifest_sha256` его строки в `channel.json`; на сервере «Доски» 1.17.0 и новее — `boardctl release verify
